@@ -1,29 +1,30 @@
-const Pusher = require("pusher");
 const { PORT } = require("../config");
-const { APP_ID, KEY, SECRET, CLUSTER } = require("../config").pusher;
+const routes = require("./routes/orderRoutes").routes;
 
-const fastify = require("fastify")({
+/**
+ * Initialized fastify plugin
+ */
+const server = require("fastify")({
    logger: true
 });
 
-const connect = require("./db/config.js").connect(fastify);
 /**
- *
- * Pusher Configurations
+ * Register fastify plugins here
+ */
+server.register(require("fastify-cors"));
+
+/**
+ * Connect mongo Database
  */
 
-const pusher = new Pusher({
-   appId: APP_ID,
-   key: KEY,
-   secret: SECRET,
-   cluster: CLUSTER
-});
+const connect = require("./db/config.js").connect(server);
 
-// app.post("/message", (req, res) => {
-//    const count = req.body;
-//    pusher.trigger("fassos", "order", count);
-//    res.json(count);
-// });
+/**
+ * Register all routes here
+ */
+routes.map(route => {
+   server.route(route);
+});
 
 /**
  *
@@ -32,10 +33,10 @@ const pusher = new Pusher({
 
 const start = async () => {
    try {
-      fastify.listen(PORT);
-      fastify.log.info(`Server is running on ${PORT}`);
+      server.listen(PORT);
+      server.log.info(`Server is running on ${PORT}`);
    } catch (error) {
-      fastify.log.error(error);
+      server.log.error(error);
       process.exit(0);
    }
 };
