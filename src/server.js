@@ -33,7 +33,7 @@ routes.map(route => {
 
 const start = async () => {
    try {
-      server.listen(PORT);
+      server.listen(process.env.PORT || PORT);
       server.log.info(`Server is running on ${PORT}`);
    } catch (error) {
       server.log.error(error);
