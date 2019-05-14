@@ -1,17 +1,39 @@
 const Pusher = require("pusher");
 const express = require("express");
 const bodyParser = require("body-parser");
+const { PORT } = require("./config");
+const { APP_ID, KEY, SECRET, CLUSTER } = require("./config").pusher;
 const app = express();
+
+/**
+ * Set PORT for node APP
+ *
+ */
+
+app.set("PORT", PORT);
+
+/**
+ * Apply middleware
+ */
+
 app.use(bodyParser.json());
+
+/**
+ *
+ * Pusher Configurations
+ */
+
 const pusher = new Pusher({
-   appId: "780756",
-   key: "93d33b6256a37fd6c03e",
-   secret: "48fd016514f6a8b44659",
-   cluster: "ap2",
+   appId: APP_ID,
+   key: KEY,
+   secret: SECRET,
+   cluster: CLUSTER,
    encrypted: true
 });
 
-app.set("PORT", process.env.PORT || 4000);
+/**
+ * Allow all API's for All origin to fix cors issue
+ */
 
 app.all("/*", function(req, res, next) {
    res.header("Access-Control-Allow-Origin", "*");
@@ -25,9 +47,11 @@ app.post("/message", (req, res) => {
    pusher.trigger("fassos", "order", count);
    res.json(count);
 });
-// pusher.trigger("my-channel", "my-event", {
-//    message: "hello world"
-// });
+
+/**
+ *
+ * Listen to the given PORT
+ */
 
 app.listen(app.get("PORT"), () => {
    console.log(`Server is running on ${app.get("PORT")}`);
