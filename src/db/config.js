@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-const { url } = require("../../config").database;
+// const { url } = require("../../config").database;
+const { url } = require("../../config/index").production_database;
 
 const db = {
    connect: async fastify => {
