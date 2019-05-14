@@ -1,4 +1,5 @@
-const { PORT } = require("../config");
+// const { PORT } = require("../config");
+const PORT = process.env.PORT || 4000;
 const routes = require("./routes/orderRoutes").routes;
 
 /**
@@ -33,7 +34,7 @@ routes.map(route => {
 
 const start = async () => {
    try {
-      server.listen(process.env.PORT || PORT);
+      server.listen(PORT, "0.0.0.0");
       server.log.info(`Server is running `);
    } catch (error) {
       server.log.error(error);
